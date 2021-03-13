@@ -6,6 +6,17 @@ import matplotlib.pyplot as plt
 
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    This function load the csv file for categories and messages, merged the data and create a proper header for the resulting dataframe
+    
+    arg: 
+    messages_filepath: The file path for the messages csv
+    categories_filepath: The file path for the categories csv
+    
+    result:
+    df :  dataframe with proper label and column header
+    """
+    
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
     
@@ -46,16 +57,21 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    """
+    This function cleaned the dataset created from load dataset function. It looks for deuplicate values and correct annomalies in the          dataframe
+
+    arg:
+    df: dataframe from the load_data set function
+
+    result:
+    df: cleaned dataframe
+    """
     # check number of duplicates
-    print("#shape of dataset# "{}.format(print(df[df.duplicated(subset = 'message')].shape))
+    print("#shape of dataset# {}".format(print(df[df.duplicated(subset = 'message')].shape)))
     # drop duplicates
     df = df.drop_duplicates(subset = 'message')
     # check number of duplicates
     df[df.duplicated(subset = 'message')].shape
-    
-    # create plot to show each column
-    #df.hist(layout=(8,5), figsize=(30,40))
-    #plt.show()
     
     #At quick glance we could see some row in request column was categorise as 2. We prefer to drop this row
     df = df[df['related']!=2]
@@ -68,11 +84,22 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    """
+    This funtion save the dataframe returned by clean_data funtion into an sql datafrma: complete ETL
+    
+    arg:
+    df: Cleaned dataframe
+    database_filename: file path to save the dataframe
+    
+    """
     engine = create_engine('sqlite:///{}'.format(database_filename))
     df.to_sql('messages_category', engine, if_exists = 'replace', index=False)
 
 
 def main():
+    """
+    This funtion calls all other funtions that loads our data, clean and save our data to database
+    """
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]

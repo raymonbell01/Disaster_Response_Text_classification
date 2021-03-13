@@ -44,6 +44,11 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    positive_cat_per_col = df[df[:]!=0].count()[2:]
+    col_header = df[2:].columns[2:]
+    
+    non_positive_cat_per_col = df[df[:] ==0].count()[2:]
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -62,6 +67,42 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=col_header,
+                    y=positive_cat_per_col
+                )
+            ],
+
+            'layout': {
+                'title': 'Number of positive classification per categorisation in training data',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Category"
+                }
+            }
+        },
+                {
+            'data': [
+                Bar(
+                    x=col_header,
+                    y=non_positive_cat_per_col
+                )
+            ],
+
+            'layout': {
+                'title': 'Number of non positive classification per categorisation in training data',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Category"
                 }
             }
         }
