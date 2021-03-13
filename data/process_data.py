@@ -53,6 +53,9 @@ def load_data(messages_filepath, categories_filepath):
     df = pd.concat([df,categories],axis=1)
     df.head()
     
+    #Change values of related to 1 where it's erronously inputed as 2
+    df['related'] = df['related'].replace(2,1)
+    
     return df
 
 
@@ -67,18 +70,15 @@ def clean_data(df):
     df: cleaned dataframe
     """
     # check number of duplicates
-    print("#shape of dataset# {}".format(print(df[df.duplicated(subset = 'message')].shape)))
+    print("#number of duplicate of dataset# {}".format(print(df[df.duplicated(subset = 'message')].shape)))
     # drop duplicates
     df = df.drop_duplicates(subset = 'message')
     # check number of duplicates
     df[df.duplicated(subset = 'message')].shape
-    
-    #At quick glance we could see some row in request column was categorise as 2. We prefer to drop this row
-    df = df[df['related']!=2]
 
     #child alone also has just one variable meaning, none of the message is related to child alone. We are dropping this        column.
     #we are dropiing original and id column because the are not useful in our model
-    df.drop(['child_alone','original','id'], inplace = True, axis =1)
+    df = df.drop(['child_alone','original','id'], axis =1)
     
     return df
 
